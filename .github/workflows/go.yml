@@ -18,7 +18,7 @@ jobs:
           ALLOW_NONE_AUTHENTICATION: yes
           ETCD_ADVERTISE_CLIENT_URLS: http://localhost:2379
         ports:
-          - 2379:2379
+          - "2379:2379"
       consul-server:
         image: hashicorp/consul:1.10.0
         ports:

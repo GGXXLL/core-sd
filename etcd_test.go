@@ -65,7 +65,7 @@ func TestEtcdRegistrar(t *testing.T) {
 	go func() {
 		_ = c.Serve(ctx)
 	}()
-	time.Sleep(1 * time.Second)
+	time.Sleep(5 * time.Second)
 	c.Invoke(func(in sd.Instancer, logger log.Logger) {
 		endpointer := sd.NewEndpointer(in, barFactory, logger)
 		balancer := lb.NewRoundRobin(endpointer)
