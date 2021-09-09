@@ -1,7 +1,7 @@
 # core-sd
 
 [DoNewsCode/core](https://github.com/DoNewsCode/core) is a service container that elegantly bootstrap and coordinate twelve-factor apps in Go.
-This is a service-discovery plugin using the [DoNewsCode/core](https://github.com/DoNewsCode/core) framework.
+This is a service-discovery plugin using the [DoNewsCode/core](https://github.com/DoNewsCode/core) framework and [go-kit](https://github.com/go-kit/kit).
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ggxxll/core-sd)](https://goreportcard.com/report/github.com/ggxxll/core-sd)
 [![Core Release](https://img.shields.io/github/release/DoNewsCode/core.svg)](https://github.com/DoNewsCode/core/releases/latest)
