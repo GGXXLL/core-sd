@@ -25,7 +25,7 @@ func TestEtcdRegistrar(t *testing.T) {
 	c := core.Default(
 		core.WithInline("name", "consul_test"),
 		core.WithInline("version", "0.0.1"),
-		core.WithInline("http.addr", "192.168.82.116:8888"),
+		core.WithInline("http.addr", "127.0.0.1:8888"),
 		core.WithInline("grpc.disable", true),
 		core.WithInline("etcd.default.endpoints", []string{"127.0.0.1:2379"}),
 	)

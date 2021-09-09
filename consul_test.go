@@ -31,8 +31,8 @@ func TestConsulRegistrar(t *testing.T) {
 	c := core.Default(
 		core.WithInline("name", "foo"),
 		core.WithInline("version", "0.0.1"),
-		core.WithInline("http.addr", "192.168.82.116:8888"),
-		core.WithInline("grpc.addr", "192.168.82.116:9999"),
+		core.WithInline("http.addr", "127.0.0.1:8888"),
+		core.WithInline("grpc.addr", "127.0.0.1:9999"),
 		core.WithInline("consul.addr", "127.0.0.1:8500"),
 	)
 	defer c.Shutdown()
