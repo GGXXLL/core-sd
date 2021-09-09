@@ -46,7 +46,6 @@ func provideClient(in clientIn) (etcd.Client, error) {
 		}
 		in.Options.Endpoints[i] = "http://" + end
 	}
-	in.Logger.Log("endpoints", in.Options.Endpoints)
 
 	return etcd.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
 }
