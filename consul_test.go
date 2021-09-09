@@ -3,6 +3,7 @@ package core_sd_test
 import (
 	"context"
 	"fmt"
+	"os"
 	"testing"
 	"time"
 
@@ -28,12 +29,22 @@ func provideConsulClient(conf contract.ConfigAccessor) (*api.Client, error) {
 }
 
 func TestConsulRegistrar(t *testing.T) {
+	if os.Getenv("CONSUL_ADDR") == "" {
+		fmt.Println("set CONSUL_ADDR to run test")
+		return
+	}
+
+	serverIp := os.Getenv("SERVER_IP")
+	if serverIp == "" {
+		serverIp = "127.0.0.1"
+	}
+
 	c := core.Default(
 		core.WithInline("name", "foo"),
 		core.WithInline("version", "0.0.1"),
-		core.WithInline("http.addr", "127.0.0.1:8888"),
-		core.WithInline("grpc.addr", "127.0.0.1:9999"),
-		core.WithInline("consul.addr", "127.0.0.1:8500"),
+		core.WithInline("http.addr", serverIp+":8888"),
+		core.WithInline("grpc.addr", serverIp+":9999"),
+		core.WithInline("consul.addr", os.Getenv("CONSUL_ADDR")),
 	)
 	defer c.Shutdown()
 
@@ -60,8 +71,7 @@ func TestConsulRegistrar(t *testing.T) {
 	ctx, canel := context.WithCancel(context.Background())
 	defer canel()
 	go func() {
-		err := c.Serve(ctx)
-		t.Log(err)
+		_ = c.Serve(ctx)
 	}()
 	time.Sleep(1 * time.Second)
 
