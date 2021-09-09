@@ -7,7 +7,7 @@ import (
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
-	"github.com/go-kit/kit/sd/etcd"
+	"github.com/go-kit/kit/sd/etcdv3"
 )
 
 type instancerIn struct {
@@ -18,7 +18,7 @@ type instancerIn struct {
 	Conf    contract.ConfigAccessor
 	Logger  log.Logger
 
-	Client  etcd.Client
+	Client  etcdv3.Client
 	Options *InstancerOption
 }
 
@@ -31,5 +31,5 @@ func provideInstancer(in instancerIn) (sd.Instancer, error) {
 		return nil, fmt.Errorf("options is nil")
 	}
 
-	return etcd.NewInstancer(in.Client, in.Options.Prefix, in.Logger)
+	return etcdv3.NewInstancer(in.Client, in.Options.Prefix, in.Logger)
 }

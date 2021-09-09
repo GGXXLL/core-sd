@@ -3,7 +3,7 @@ package etcd_test
 import (
 	"context"
 	"fmt"
-	"github.com/ggxxll/core-sd/etcd"
+
 	"io"
 	"os"
 	"strings"
@@ -16,10 +16,12 @@ import (
 	"github.com/DoNewsCode/core/srvhttp"
 
 	core_sd "github.com/ggxxll/core-sd"
+	"github.com/ggxxll/core-sd/etcd"
+
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
-	kitetcd "github.com/go-kit/kit/sd/etcd"
+	"github.com/go-kit/kit/sd/etcdv3"
 	"github.com/go-kit/kit/sd/lb"
 )
 
@@ -46,7 +48,7 @@ func TestEtcdRegistrar(t *testing.T) {
 	c.Provide(otetcd.Providers())
 	c.Provide(di.Deps{
 		func() *etcd.RegistrarOptions {
-			return &etcd.RegistrarOptions{Service: kitetcd.Service{
+			return &etcd.RegistrarOptions{Service: etcdv3.Service{
 				Key:   fmt.Sprintf("/services/foosvc/%s:8888", serverIp),
 				Value: fmt.Sprintf("http://%s:8888/live", serverIp),
 			}}

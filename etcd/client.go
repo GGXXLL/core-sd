@@ -8,13 +8,13 @@ import (
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/sd/etcd"
+	"github.com/go-kit/kit/sd/etcdv3"
 )
 
 type ClientOptions struct {
 	Name          string
 	Endpoints     []string
-	ClientOptions etcd.ClientOptions
+	ClientOptions etcdv3.ClientOptions
 }
 
 type clientIn struct {
@@ -26,7 +26,7 @@ type clientIn struct {
 	Options *ClientOptions `optional:"true"`
 }
 
-func provideClient(in clientIn) (etcd.Client, error) {
+func provideClient(in clientIn) (etcdv3.Client, error) {
 	if in.Options == nil {
 		in.Options = &ClientOptions{
 			Name: "default",
@@ -47,5 +47,5 @@ func provideClient(in clientIn) (etcd.Client, error) {
 		in.Options.Endpoints[i] = "http://" + end
 	}
 
-	return etcd.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
+	return etcdv3.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
 }

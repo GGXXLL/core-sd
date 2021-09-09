@@ -3,8 +3,6 @@ package consul_test
 import (
 	"context"
 	"fmt"
-	"github.com/ggxxll/core-sd/consul"
-	"github.com/go-kit/kit/endpoint"
 	"io"
 	"os"
 	"testing"
@@ -17,6 +15,9 @@ import (
 	"github.com/DoNewsCode/core/srvhttp"
 
 	core_sd "github.com/ggxxll/core-sd"
+	"github.com/ggxxll/core-sd/consul"
+
+	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
