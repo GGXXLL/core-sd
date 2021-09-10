@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
@@ -33,7 +32,6 @@ func ProvideMore(in moreIn) moreOut {
 			return endpoint.Nop, nil, nil
 		}
 	}
-	fmt.Println(len(in.EndpointerOptions))
 	endpointer := sd.NewEndpointer(in.Instancer, in.Factory, in.Logger, in.EndpointerOptions...)
 	balancer := lb.NewRoundRobin(endpointer)
 
