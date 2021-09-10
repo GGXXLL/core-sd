@@ -2,6 +2,7 @@ package core_sd
 
 import (
 	"context"
+	"github.com/DoNewsCode/core/di"
 
 	"github.com/DoNewsCode/core"
 	"github.com/DoNewsCode/core/contract"
@@ -9,22 +10,36 @@ import (
 	"github.com/go-kit/kit/sd"
 )
 
+type moduleIn struct {
+	di.In
+
+	Registrar  sd.Registrar
+	Dispatcher contract.Dispatcher
+	Subscribe  SubscribeFunc `optional:"true"`
+}
+
 type Module struct {
 	registrar  sd.Registrar
 	dispatcher contract.Dispatcher
+	subscribe  SubscribeFunc
 }
 
-func NewRegistrarModule(r sd.Registrar, d contract.Dispatcher) Module {
+type SubscribeFunc func(contract.Dispatcher, sd.Registrar)
+
+func NewRegistrarModule(in moduleIn) Module {
 	m := Module{
-		registrar:  r,
-		dispatcher: d,
+		registrar:  in.Registrar,
+		dispatcher: in.Dispatcher,
 	}
-	subscribe(d, r)
+	if in.Subscribe == nil {
+		in.Subscribe = DefaultSubscribe
+	}
+	in.Subscribe(m.dispatcher, m.registrar)
 
 	return m
 }
 
-func subscribe(d contract.Dispatcher, reg sd.Registrar) {
+func DefaultSubscribe(d contract.Dispatcher, reg sd.Registrar) {
 	d.Subscribe(events.Listen(core.OnGRPCServerStart, func(ctx context.Context, event interface{}) error {
 		reg.Register()
 		return nil

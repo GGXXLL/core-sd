@@ -3,24 +3,22 @@ package consul_test
 import (
 	"context"
 	"fmt"
-	"io"
-	"os"
-	"testing"
-	"time"
-
 	"github.com/DoNewsCode/core"
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/DoNewsCode/core/srvgrpc"
 	"github.com/DoNewsCode/core/srvhttp"
-
 	core_sd "github.com/ggxxll/core-sd"
-	"github.com/ggxxll/core-sd/consul"
-
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
+	"io"
+	"os"
+	"testing"
+	"time"
+
+	"github.com/ggxxll/core-sd/consul"
+
 	"github.com/hashicorp/consul/api"
 )
 
@@ -64,23 +62,30 @@ func TestConsulRegistrar(t *testing.T) {
 				PassingOnly: false,
 			}
 		},
+		func() sd.Factory {
+			return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+				return endpoint.Nop, nil, nil
+			}
+		},
 	})
 
+	// do registrar, note: must be called before serve start.
+	// first method
 	c.AddModuleFunc(core_sd.NewRegistrarModule)
+	// second method
+	//c.Invoke(core_sd.DefaultSubscribe)
+
 	c.AddModule(srvhttp.HealthCheckModule{})
 	c.AddModule(srvgrpc.HealthCheckModule{})
 
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	go func() {
 		_ = c.Serve(ctx)
 	}()
 	time.Sleep(1 * time.Second)
 
-	c.Invoke(func(in sd.Instancer, logger log.Logger) {
-		endpointer := sd.NewEndpointer(in, barFactory, logger)
-		balancer := lb.NewRoundRobin(endpointer)
-		retry := lb.Retry(3, 3*time.Second, balancer)
+	c.Invoke(func(b lb.Balancer) {
+		retry := lb.Retry(3, 3*time.Second, b)
 
 		// And now retry can be used like any other endpoint.
 		req := struct{}{}
@@ -88,8 +93,6 @@ func TestConsulRegistrar(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
-}
-
-func barFactory(string) (endpoint.Endpoint, io.Closer, error) {
-	return endpoint.Nop, nil, nil
+	cancel()
+	time.Sleep(1 * time.Second)
 }

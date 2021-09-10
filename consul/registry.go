@@ -50,7 +50,7 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 		if addr := in.Conf.String("http.addr"); addr != "" && !in.Conf.Bool("http.disable") {
 			endpoints["http"] = "//" + addr
 			checks = append(checks, &api.AgentServiceCheck{
-				CheckID:  "http",
+				CheckID:  in.AppName.String()+":http",
 				Status:   api.HealthPassing,
 				Interval: "10s",
 				HTTP:     "http://" + in.Conf.String("http.addr") + "/live",
@@ -59,7 +59,7 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 		if addr := in.Conf.String("grpc.addr"); addr != "" && !in.Conf.Bool("grpc.disable") {
 			endpoints["grpc"] = "//" + addr
 			checks = append(checks, &api.AgentServiceCheck{
-				CheckID:  "grpc",
+				CheckID:  in.AppName.String()+"grpc",
 				Status:   api.HealthPassing,
 				Interval: "10s",
 				GRPC:     in.Conf.String("grpc.addr"),

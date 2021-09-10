@@ -1,11 +1,8 @@
 package consul
 
 import (
-	"fmt"
-
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
-
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/consul"
@@ -30,11 +27,6 @@ type InstancerOption struct {
 }
 
 func provideInstancer(in instancerIn) (sd.Instancer, error) {
-	if in.Options == nil {
-		return nil, fmt.Errorf("options is nil")
-	}
+	return consul.NewInstancer(in.Client, in.Logger, in.Options.Service, in.Options.Tags, in.Options.PassingOnly), nil
 
-	instancer := consul.NewInstancer(in.Client, in.Logger, in.Options.Service, in.Options.Tags, in.Options.PassingOnly)
-
-	return instancer, nil
 }

@@ -1,8 +1,6 @@
 package etcd
 
 import (
-	"fmt"
-
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/log"
@@ -27,9 +25,5 @@ type InstancerOption struct {
 }
 
 func provideInstancer(in instancerIn) (sd.Instancer, error) {
-	if in.Options == nil {
-		return nil, fmt.Errorf("options is nil")
-	}
-
 	return etcdv3.NewInstancer(in.Client, in.Options.Prefix, in.Logger)
 }

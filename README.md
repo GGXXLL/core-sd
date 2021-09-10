@@ -57,8 +57,12 @@ func main() {
         srvhttp.HealthCheckModule{},
         srvgrpc.HealthCheckModule{},
     )
-    // provide RegistrarModule
+    // do registrar, note: must be called before serve start.
+    // first method
     c.AddModuleFunc(core_sd.NewRegistrarModule)
+    // second method
+    //c.Invoke(core_sd.DefaultSubscribe)
+
 
     // start server
     c.Serve(context.Background())
@@ -120,26 +124,25 @@ func TestConsulRegistrar(t *testing.T) {
 				PassingOnly: false,
 			}
 		},
+		// provide self 
+        func() sd.Factory {
+            return func(instance string) (endpoint.Endpoint, io.Closer, error) {
+                return endpoint.Nop, nil, nil
+            }
+        },
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	c.Invoke(func(in sd.Instancer, logger log.Logger) {
-		endpointer := sd.NewEndpointer(in, barFactory, logger)
-		balancer := lb.NewRoundRobin(endpointer)
-		retry := lb.Retry(3, 3*time.Second, balancer)
+    c.Invoke(func(b lb.Balancer) {
+        retry := lb.Retry(3, 3*time.Second, b)
 
-		// And now retry can be used like any other endpoint.
-		req := struct{}{}
-		if _, err := retry(ctx, req); err != nil {
-			t.Fatal(err)
-		}
-	})
+        // And now retry can be used like any other endpoint.
+        req := struct{}{}
+        if _, err := retry(ctx, req); err != nil {
+            t.Fatal(err)
+        }
+    })
 }
-
-func barFactory(string) (endpoint.Endpoint, io.Closer, error) {
-	return endpoint.Nop, nil, nil
-}
-
 ```

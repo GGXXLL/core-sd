@@ -19,8 +19,6 @@ import (
 	"github.com/ggxxll/core-sd/etcd"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
-	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/etcdv3"
 	"github.com/go-kit/kit/sd/lb"
 )
@@ -58,19 +56,21 @@ func TestEtcdRegistrar(t *testing.T) {
 		},
 	})
 
+	// do registrar, note: must be called before serve start.
+	// first method
 	c.AddModuleFunc(core_sd.NewRegistrarModule)
+	// second method
+	//c.Invoke(core_sd.DefaultSubscribe)
+
 	c.AddModule(srvhttp.HealthCheckModule{})
 
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	go func() {
 		_ = c.Serve(ctx)
 	}()
 	time.Sleep(1 * time.Second)
-	c.Invoke(func(in sd.Instancer, logger log.Logger) {
-		endpointer := sd.NewEndpointer(in, barFactory, logger)
-		balancer := lb.NewRoundRobin(endpointer)
-		retry := lb.Retry(3, 3*time.Second, balancer)
+	c.Invoke(func(b lb.Balancer) {
+		retry := lb.Retry(3, 3*time.Second, b)
 
 		// And now retry can be used like any other endpoint.
 		req := struct{}{}
@@ -78,6 +78,8 @@ func TestEtcdRegistrar(t *testing.T) {
 			t.Fatal(err)
 		}
 	})
+	cancel()
+	time.Sleep(1*time.Second)
 }
 
 func barFactory(string) (endpoint.Endpoint, io.Closer, error) {
