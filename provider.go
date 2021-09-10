@@ -21,7 +21,6 @@ type moduleIn struct {
 type Module struct {
 	registrar  sd.Registrar
 	dispatcher contract.Dispatcher
-	subscribe  SubscribeFunc
 }
 
 type SubscribeFunc func(contract.Dispatcher, sd.Registrar)

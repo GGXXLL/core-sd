@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"io"
 	"os"
 	"strings"
 	"testing"
@@ -18,7 +17,6 @@ import (
 	core_sd "github.com/ggxxll/core-sd"
 	"github.com/ggxxll/core-sd/etcd"
 
-	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd/etcdv3"
 	"github.com/go-kit/kit/sd/lb"
 )
@@ -80,8 +78,4 @@ func TestEtcdRegistrar(t *testing.T) {
 	})
 	cancel()
 	time.Sleep(1*time.Second)
-}
-
-func barFactory(string) (endpoint.Endpoint, io.Closer, error) {
-	return endpoint.Nop, nil, nil
 }
