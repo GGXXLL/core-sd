@@ -3,7 +3,7 @@ module github.com/ggxxll/core-sd
 go 1.15
 
 require (
-	github.com/DoNewsCode/core v0.9.1
+	github.com/DoNewsCode/core v0.9.2
 	github.com/armon/go-metrics v0.3.9 // indirect
 	github.com/fatih/color v1.12.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
