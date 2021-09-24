@@ -4,7 +4,7 @@
 This is a service-discovery plugin using the [DoNewsCode/core](https://github.com/DoNewsCode/core) framework and [go-kit](https://github.com/go-kit/kit).
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/ggxxll/core-sd)](https://goreportcard.com/report/github.com/ggxxll/core-sd)
-[![Core Release](https://img.shields.io/github/release/DoNewsCode/core-sd.svg)](https://github.com/DoNewsCode/core-sd/releases/latest)
+[![core-sd Release](https://img.shields.io/github/release/GGXXLL/core-sd.svg)](https://github.com/GGXXLL/core-sd/releases/latest)
 
 #### Support Backend
 - [x] etcd-v3
