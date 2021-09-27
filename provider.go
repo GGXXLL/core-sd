@@ -13,6 +13,7 @@ import (
 type moduleIn struct {
 	di.In
 
+	Conf       contract.ConfigAccessor
 	Registrar  sd.Registrar
 	Dispatcher contract.Dispatcher
 	Subscribe  SubscribeFunc `optional:"true"`
@@ -21,6 +22,7 @@ type moduleIn struct {
 type Module struct {
 	registrar  sd.Registrar
 	dispatcher contract.Dispatcher
+	conf       contract.ConfigAccessor
 }
 
 type SubscribeFunc func(contract.Dispatcher, sd.Registrar)
@@ -29,16 +31,22 @@ func NewRegistrarModule(in moduleIn) Module {
 	m := Module{
 		registrar:  in.Registrar,
 		dispatcher: in.Dispatcher,
+		conf:       in.Conf,
 	}
 	if in.Subscribe == nil {
+		// TODO solve Data Race: Only one service can be registered when backend is etcd and zookeeper.
 		in.Subscribe = DefaultSubscribe
 	}
 	in.Subscribe(m.dispatcher, m.registrar)
-
 	return m
 }
 
 func DefaultSubscribe(d contract.Dispatcher, reg sd.Registrar) {
+	SubscribeGRPC(d, reg)
+	SubscribeHTTP(d, reg)
+}
+
+func SubscribeGRPC(d contract.Dispatcher, reg sd.Registrar) {
 	d.Subscribe(events.Listen(core.OnGRPCServerStart, func(ctx context.Context, event interface{}) error {
 		reg.Register()
 		return nil
@@ -47,7 +55,9 @@ func DefaultSubscribe(d contract.Dispatcher, reg sd.Registrar) {
 		reg.Deregister()
 		return nil
 	}))
+}
 
+func SubscribeHTTP(d contract.Dispatcher, reg sd.Registrar) {
 	d.Subscribe(events.Listen(core.OnHTTPServerStart, func(ctx context.Context, event interface{}) error {
 		reg.Register()
 		return nil

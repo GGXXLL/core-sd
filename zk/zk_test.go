@@ -72,6 +72,9 @@ func TestZk(t *testing.T) {
 				Path: path,
 			}
 		},
+		func() core_sd.SubscribeFunc {
+			return core_sd.SubscribeGRPC
+		},
 	})
 
 	// do registrar, note: must be called before serve start.
