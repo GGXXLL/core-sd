@@ -25,6 +25,12 @@ jobs:
           - "8500:8500"
           - "8600:8600/tcp"
           - "8600:8600/udp"
+      zookeeper:
+        image: 'bitnami/zookeeper:latest'
+        ports:
+            - '2181:2181'
+        env:
+            ALLOW_ANONYMOUS_LOGIN: yes
     steps:
     - uses: actions/checkout@v2
 
