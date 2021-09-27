@@ -2,13 +2,22 @@ package etcd
 
 import (
 	"github.com/DoNewsCode/core/di"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/etcdv3"
+	"github.com/go-kit/log"
 )
 
+// Service unified import for zk.Service of kit.
+// Otherwise, user need imports package like this:
+// 	import (
+//		"github.com/ggxxll/core-sd/etcd"
+//		kitzk "github.com/go-kit/kit/sd/etcdv3"
+//  )
+type Service etcdv3.Service
+
+// RegistrarOptions wraps args of etcdv3.NewRegistrar func.
 type RegistrarOptions struct {
-	Service etcdv3.Service
+	Service Service
 }
 
 type registrarIn struct {
@@ -21,5 +30,6 @@ type registrarIn struct {
 }
 
 func provideRegistrar(in registrarIn) sd.Registrar {
-	return etcdv3.NewRegistrar(in.Client, in.Options.Service, in.Logger)
+	service := etcdv3.Service(in.Options.Service)
+	return etcdv3.NewRegistrar(in.Client, service, in.Logger)
 }

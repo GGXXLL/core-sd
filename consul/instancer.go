@@ -3,9 +3,9 @@ package consul
 import (
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/consul"
+	"github.com/go-kit/log"
 )
 
 type instancerIn struct {
@@ -20,6 +20,7 @@ type instancerIn struct {
 	Options *InstancerOption
 }
 
+// InstancerOption wraps args of consul.NewInstancer func.
 type InstancerOption struct {
 	Service     string
 	Tags        []string

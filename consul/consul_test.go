@@ -3,21 +3,24 @@ package consul_test
 import (
 	"context"
 	"fmt"
+	"io"
+	"os"
+	"sync"
+	"testing"
+	"time"
+
 	"github.com/DoNewsCode/core"
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/DoNewsCode/core/srvgrpc"
 	"github.com/DoNewsCode/core/srvhttp"
+
 	core_sd "github.com/ggxxll/core-sd"
+	"github.com/ggxxll/core-sd/consul"
+
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
-	"io"
-	"os"
-	"testing"
-	"time"
-
-	"github.com/ggxxll/core-sd/consul"
 
 	"github.com/hashicorp/consul/api"
 )
@@ -28,7 +31,7 @@ func provideConsulClient(conf contract.ConfigAccessor) (*api.Client, error) {
 	})
 }
 
-func TestConsulRegistrar(t *testing.T) {
+func TestConsul(t *testing.T) {
 	if os.Getenv("CONSUL_ADDR") == "" {
 		fmt.Println("set CONSUL_ADDR to run test")
 		return
@@ -42,6 +45,7 @@ func TestConsulRegistrar(t *testing.T) {
 	c := core.Default(
 		core.WithInline("name", "foo"),
 		core.WithInline("version", "0.0.1"),
+		core.WithInline("log.level", "none"),
 		core.WithInline("http.addr", serverIp+":8888"),
 		core.WithInline("grpc.addr", serverIp+":9999"),
 		core.WithInline("consul.addr", os.Getenv("CONSUL_ADDR")),
@@ -78,8 +82,12 @@ func TestConsulRegistrar(t *testing.T) {
 	c.AddModule(srvhttp.HealthCheckModule{})
 	c.AddModule(srvgrpc.HealthCheckModule{})
 
+	var g sync.WaitGroup
+
 	ctx, cancel := context.WithCancel(context.Background())
+	g.Add(1)
 	go func() {
+		defer g.Done()
 		_ = c.Serve(ctx)
 	}()
 	time.Sleep(1 * time.Second)
@@ -94,5 +102,5 @@ func TestConsulRegistrar(t *testing.T) {
 		}
 	})
 	cancel()
-	time.Sleep(1 * time.Second)
+	g.Wait()
 }

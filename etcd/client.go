@@ -7,8 +7,8 @@ import (
 
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd/etcdv3"
+	"github.com/go-kit/log"
 )
 
 type ClientOptions struct {

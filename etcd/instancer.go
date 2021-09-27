@@ -3,9 +3,9 @@ package etcd
 import (
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/etcdv3"
+	"github.com/go-kit/log"
 )
 
 type instancerIn struct {
@@ -20,6 +20,7 @@ type instancerIn struct {
 	Options *InstancerOption
 }
 
+// InstancerOption wraps args of etcdv3.NewInstancer func.
 type InstancerOption struct {
 	Prefix string
 }

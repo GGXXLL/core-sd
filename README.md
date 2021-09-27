@@ -9,6 +9,7 @@ This is a service-discovery plugin using the [DoNewsCode/core](https://github.co
 #### Support Backend
 - [x] etcd-v3
 - [x] consul
+- [x] zookeeper
 
 #### Usage
 
@@ -88,7 +89,7 @@ import (
 	"github.com/ggxxll/core-sd/consul"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
+	"github.com/go-kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
 	"github.com/hashicorp/consul/api"

@@ -1,12 +1,13 @@
 package internal
 
 import (
+	"io"
+
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
-	"io"
+	"github.com/go-kit/log"
 )
 
 type moreOut struct {
@@ -21,11 +22,12 @@ type moreIn struct {
 
 	Logger log.Logger
 
-	Instancer sd.Instancer
-	Factory   sd.Factory `optional:"true"`
-	EndpointerOptions   []sd.EndpointerOption `optional:"true"`
+	Instancer         sd.Instancer
+	Factory           sd.Factory            `optional:"true"`
+	EndpointerOptions []sd.EndpointerOption `optional:"true"`
 }
 
+// ProvideMore makes it easier to get sd.Endpointer and lb.Balancer
 func ProvideMore(in moreIn) moreOut {
 	if in.Factory == nil {
 		in.Factory = func(instance string) (endpoint.Endpoint, io.Closer, error) {
