@@ -8,7 +8,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-kit/kit v0.12.0
 	github.com/go-kit/log v0.2.0
-	github.com/hashicorp/consul/api v1.10.1
+	github.com/hashicorp/consul/api v1.11.0
 	github.com/knadh/koanf v1.2.3 // indirect
 	github.com/spf13/cobra v1.2.1 // indirect
 	go.uber.org/dig v1.13.0 // indirect
@@ -40,7 +40,7 @@ require (
 	github.com/heptiolabs/healthcheck v0.0.0-20180807145615-6ff867650f40 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/mattn/go-colorable v0.1.9 // indirect
+	github.com/mattn/go-colorable v0.1.10 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
