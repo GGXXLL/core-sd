@@ -3,14 +3,14 @@ module github.com/ggxxll/core-sd
 go 1.17
 
 require (
-	github.com/DoNewsCode/core v0.10.4
+	github.com/DoNewsCode/core v0.12.2
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-kit/kit v0.12.0
 	github.com/go-kit/log v0.2.0
 	github.com/go-zookeeper/zk v1.0.2
 	github.com/hashicorp/consul/api v1.12.0
-	github.com/knadh/koanf v1.2.3 // indirect
+	github.com/knadh/koanf v1.4.0 // indirect
 	github.com/spf13/cobra v1.2.1 // indirect
 	go.uber.org/dig v1.13.0 // indirect
 	google.golang.org/genproto v0.0.0-20210924002016-3dee208752a0 // indirect
