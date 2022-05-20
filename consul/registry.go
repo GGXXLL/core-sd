@@ -44,26 +44,26 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 			},
 		}
 	}
-
+	ID := in.AppName.String() + ":" + in.Env.String()
 	if in.Options.AgentServiceRegistration == nil {
 		checks := make([]*api.AgentServiceCheck, 0)
 		endpoints := make(map[string]string)
 		if addr := in.Conf.String("http.addr"); addr != "" && !in.Conf.Bool("http.disable") {
 			endpoints["http"] = "//" + addr
 			checks = append(checks, &api.AgentServiceCheck{
-				CheckID:  in.AppName.String()+":http",
+				CheckID:  ID + ":http",
 				Status:   api.HealthPassing,
 				Interval: "10s",
-				HTTP:     "http://" + in.Conf.String("http.addr") + "/live",
+				HTTP:     "http://" + addr + "/live",
 			})
 		}
 		if addr := in.Conf.String("grpc.addr"); addr != "" && !in.Conf.Bool("grpc.disable") {
 			endpoints["grpc"] = "//" + addr
 			checks = append(checks, &api.AgentServiceCheck{
-				CheckID:  in.AppName.String()+"grpc",
+				CheckID:  ID + ":grpc",
 				Status:   api.HealthPassing,
 				Interval: "10s",
-				GRPC:     in.Conf.String("grpc.addr"),
+				GRPC:     addr,
 			})
 		}
 		if len(endpoints) == 0 {
@@ -85,8 +85,8 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 		}
 
 		in.Options.AgentServiceRegistration = &api.AgentServiceRegistration{
-			ID:   in.AppName.String(),
-			Name: in.AppName.String(),
+			ID:   ID,
+			Name: ID,
 			Tags: []string{
 				fmt.Sprintf("version=%s", in.Conf.String("version")),
 			},

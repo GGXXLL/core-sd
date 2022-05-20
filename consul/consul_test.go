@@ -3,7 +3,6 @@ package consul_test
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"sync"
 	"testing"
@@ -18,8 +17,6 @@ import (
 	core_sd "github.com/ggxxll/core-sd"
 	"github.com/ggxxll/core-sd/consul"
 
-	"github.com/go-kit/kit/endpoint"
-	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
 
 	"github.com/hashicorp/consul/api"
@@ -43,7 +40,7 @@ func TestConsul(t *testing.T) {
 	}
 
 	c := core.Default(
-		core.WithInline("name", "foo"),
+		core.WithInline("name", "app"),
 		core.WithInline("version", "0.0.1"),
 		core.WithInline("log.level", "none"),
 		core.WithInline("http.addr", serverIp+":8888"),
@@ -55,22 +52,6 @@ func TestConsul(t *testing.T) {
 	c.Provide(consul.Providers())
 	c.Provide(di.Deps{
 		provideConsulClient,
-	})
-	c.Provide(di.Deps{
-		func(appName contract.AppName, conf contract.ConfigAccessor) *consul.InstancerOption {
-			return &consul.InstancerOption{
-				Service: appName.String(),
-				Tags: []string{
-					fmt.Sprintf("version=%s", conf.String("version")),
-				},
-				PassingOnly: false,
-			}
-		},
-		func() sd.Factory {
-			return func(instance string) (endpoint.Endpoint, io.Closer, error) {
-				return endpoint.Nop, nil, nil
-			}
-		},
 	})
 
 	// do registrar, note: must be called before serve start.

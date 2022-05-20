@@ -11,7 +11,6 @@ import (
 	"time"
 
 	"github.com/DoNewsCode/core"
-	"github.com/DoNewsCode/core/di"
 	"github.com/DoNewsCode/core/otetcd"
 	"github.com/DoNewsCode/core/srvhttp"
 
@@ -32,28 +31,18 @@ func TestEtcd(t *testing.T) {
 	}
 
 	c := core.Default(
-		core.WithInline("name", "consul_test"),
+		core.WithInline("name", "app"),
 		core.WithInline("version", "0.0.1"),
+		core.WithInline("env", "test"),
 		core.WithInline("log.level", "none"),
 		core.WithInline("http.addr", serverIp+":8888"),
-		core.WithInline("grpc.disable", true),
+		core.WithInline("grpc.addr", serverIp+":9999"),
 		core.WithInline("etcd.default.endpoints", strings.Split(os.Getenv("ETCD_ADDR"), ",")),
 	)
 	defer c.Shutdown()
 
 	c.Provide(etcd.Providers())
 	c.Provide(otetcd.Providers())
-	c.Provide(di.Deps{
-		func() *etcd.RegistrarOptions {
-			return &etcd.RegistrarOptions{Service: etcd.Service{
-				Key:   fmt.Sprintf("/services/foosvc/%s:8888", serverIp),
-				Value: fmt.Sprintf("http://%s:8888/live", serverIp),
-			}}
-		},
-		func() *etcd.InstancerOption {
-			return &etcd.InstancerOption{Prefix: "/services/foosvc"}
-		},
-	})
 
 	// do registrar, note: must be called before serve start.
 	// first method

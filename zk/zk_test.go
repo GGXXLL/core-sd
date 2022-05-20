@@ -32,10 +32,8 @@ func TestZk(t *testing.T) {
 		serverIp = "127.0.0.1"
 	}
 
-	var path = "/core-sd.zk/test"
-
 	c := core.Default(
-		core.WithInline("name", "foo"),
+		core.WithInline("name", "app"),
 		core.WithInline("version", "0.0.1"),
 		core.WithInline("log.level", "none"),
 		core.WithInline("http.addr", serverIp+":8888"),
@@ -54,22 +52,6 @@ func TestZk(t *testing.T) {
 				ClientOptions: []zk.Option{
 					zk.Payload(payload),
 				},
-			}
-		},
-		// provide this option for define the registrar info
-		func() *zk.RegistrarOptions {
-			return &zk.RegistrarOptions{
-				Service: zk.Service{
-					Path: path,
-					Name: "core-sd",
-					Data: []byte("just some payload"),
-				},
-			}
-		},
-		// provide this option for discover service info by path
-		func(appName contract.AppName, conf contract.ConfigAccessor) *zk.InstancerOption {
-			return &zk.InstancerOption{
-				Path: path,
 			}
 		},
 		func() core_sd.SubscribeFunc {

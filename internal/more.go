@@ -1,13 +1,15 @@
 package internal
 
 import (
-	"io"
-
+	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/sd"
 	"github.com/go-kit/kit/sd/lb"
 	"github.com/go-kit/log"
+	"io"
+	"net/url"
+	"strings"
 )
 
 type moreOut struct {
@@ -41,4 +43,23 @@ func ProvideMore(in moreIn) moreOut {
 		Endpointer: endpointer,
 		Balancer:   balancer,
 	}
+}
+
+func ParseAddr(s string) (string, error) {
+	if !strings.HasPrefix(s, "//") {
+		s = "//" + s
+	}
+	raw, err := url.Parse(s)
+	if err != nil {
+		return "", err
+	}
+	hostName := raw.Hostname()
+	if hostName == "" {
+		return "localhost:" + raw.Port(), nil
+	}
+	return raw.Host, nil
+}
+
+func ServiceKey(appName contract.AppName, env contract.Env, mode string) string {
+	return strings.Join([]string{"services", appName.String(), env.String(), mode}, "/")
 }

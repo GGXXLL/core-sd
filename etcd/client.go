@@ -3,8 +3,6 @@ package etcd
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/DoNewsCode/core/contract"
 	"github.com/DoNewsCode/core/di"
 	"github.com/go-kit/kit/sd/etcdv3"
@@ -39,13 +37,5 @@ func provideClient(in clientIn) (etcdv3.Client, error) {
 		}
 		in.Options.Endpoints = in.Conf.Strings(fmt.Sprintf("etcd.%s.endpoints", in.Options.Name))
 	}
-
-	for i, end := range in.Options.Endpoints {
-		if strings.HasPrefix(end, "http") {
-			continue
-		}
-		in.Options.Endpoints[i] = "http://" + end
-	}
-
 	return etcdv3.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
 }

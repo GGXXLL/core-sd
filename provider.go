@@ -34,7 +34,6 @@ func NewRegistrarModule(in moduleIn) Module {
 		conf:       in.Conf,
 	}
 	if in.Subscribe == nil {
-		// TODO solve Data Race: Only one service can be registered when backend is etcd and zookeeper.
 		in.Subscribe = DefaultSubscribe
 	}
 	in.Subscribe(m.dispatcher, m.registrar)
