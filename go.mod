@@ -75,6 +75,3 @@ require (
 
 // lock package version
 replace github.com/DoNewsCode/core v0.12.3 => github.com/DoNewsCode/core v0.12.3
-replace (
-	github.com/go-kit/kit v0.12.0 => E:\Go\src\github.com\ggxxll\kit
-)
