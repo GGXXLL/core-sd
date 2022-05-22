@@ -19,8 +19,9 @@ type instancerIn struct {
 	Conf    contract.ConfigAccessor
 	Logger  log.Logger
 
-	Client  etcdv3.Client
-	Options *InstancerOption `optional:"true"`
+	HTTPClient HTTPClient
+	GRPCClient GRPCClient
+	Options    *InstancerOption `optional:"true"`
 }
 
 type AgentServiceRegistrationInterceptor func(*api.AgentServiceRegistration)
@@ -40,14 +41,14 @@ func provideInstancer(in instancerIn) (sd.Instancer, error) {
 	}
 	ie := util.Instancer{}
 	if in.Options.HTTPPrefix != "" {
-		i, err := etcdv3.NewInstancer(in.Client, in.Options.HTTPPrefix, in.Logger)
+		i, err := etcdv3.NewInstancer(in.HTTPClient, in.Options.HTTPPrefix, in.Logger)
 		if err != nil {
 			return nil, err
 		}
 		ie.HTTP = i
 	}
 	if in.Options.GRPCPrefix != "" {
-		i, err := etcdv3.NewInstancer(in.Client, in.Options.GRPCPrefix, in.Logger)
+		i, err := etcdv3.NewInstancer(in.GRPCClient, in.Options.GRPCPrefix, in.Logger)
 		if err != nil {
 			return nil, err
 		}

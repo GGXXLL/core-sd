@@ -2,7 +2,6 @@ package etcd_test
 
 import (
 	"context"
-	"fmt"
 	"sync"
 
 	"os"
@@ -22,8 +21,7 @@ import (
 
 func TestEtcd(t *testing.T) {
 	if os.Getenv("ETCD_ADDR") == "" {
-		fmt.Println("set ETCD_ADDR to run test")
-		return
+		t.Skip("set ETCD_ADDR to run test")
 	}
 	serverIp := os.Getenv("SERVER_IP")
 	if serverIp == "" {

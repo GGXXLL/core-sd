@@ -2,7 +2,6 @@ package consul_test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"sync"
 	"testing"
@@ -30,8 +29,7 @@ func provideConsulClient(conf contract.ConfigAccessor) (*api.Client, error) {
 
 func TestConsul(t *testing.T) {
 	if os.Getenv("CONSUL_ADDR") == "" {
-		fmt.Println("set CONSUL_ADDR to run test")
-		return
+		t.Skip("set CONSUL_ADDR to run test")
 	}
 
 	serverIp := os.Getenv("SERVER_IP")

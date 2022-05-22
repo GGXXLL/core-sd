@@ -24,7 +24,10 @@ type clientIn struct {
 	Options *ClientOptions `optional:"true"`
 }
 
-func provideClient(in clientIn) (etcdv3.Client, error) {
+type HTTPClient etcdv3.Client
+type GRPCClient etcdv3.Client
+
+func provideClient(in clientIn) (HTTPClient, GRPCClient, error) {
 	if in.Options == nil {
 		in.Options = &ClientOptions{
 			Name: "default",
@@ -37,5 +40,14 @@ func provideClient(in clientIn) (etcdv3.Client, error) {
 		}
 		in.Options.Endpoints = in.Conf.Strings(fmt.Sprintf("etcd.%s.endpoints", in.Options.Name))
 	}
-	return etcdv3.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
+	forHTTP, err := etcdv3.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
+	if err != nil {
+		return nil, nil, err
+	}
+	forGRPC, err := etcdv3.NewClient(context.Background(), in.Options.Endpoints, in.Options.ClientOptions)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return HTTPClient(forHTTP), GRPCClient(forGRPC), nil
 }

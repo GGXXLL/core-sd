@@ -32,8 +32,9 @@ type registrarIn struct {
 	Conf    contract.ConfigAccessor
 	Logger  log.Logger
 
-	Client  etcdv3.Client
-	Options *RegistrarOptions `optional:"true"`
+	HTTPClient HTTPClient
+	GRPCClient GRPCClient
+	Options    *RegistrarOptions `optional:"true"`
 }
 
 func provideRegistrar(in registrarIn) (sd.Registrar, error) {
@@ -42,14 +43,14 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 	}
 	r := util.Registrar{}
 	if in.Options.HTTPService != nil {
-		r.HTTP = etcdv3.NewRegistrar(in.Client, etcdv3.Service(*in.Options.HTTPService), in.Logger)
+		r.HTTP = etcdv3.NewRegistrar(in.HTTPClient, etcdv3.Service(*in.Options.HTTPService), in.Logger)
 	} else {
 		if !in.Conf.Bool("http.disable") {
 			addr, err := internal.ParseAddr(in.Conf.String("http.addr"))
 			if err != nil {
 				return nil, err
 			}
-			r.HTTP = etcdv3.NewRegistrar(in.Client, etcdv3.Service(Service{
+			r.HTTP = etcdv3.NewRegistrar(in.HTTPClient, etcdv3.Service(Service{
 				Key:   internal.ServiceKey(in.AppName, in.Env, "http") + "/" + addr,
 				Value: "http://" + addr,
 				TTL:   nil,
@@ -58,14 +59,14 @@ func provideRegistrar(in registrarIn) (sd.Registrar, error) {
 
 	}
 	if in.Options.GRPCService != nil {
-		r.GRPC = etcdv3.NewRegistrar(in.Client, etcdv3.Service(*in.Options.GRPCService), in.Logger)
+		r.GRPC = etcdv3.NewRegistrar(in.GRPCClient, etcdv3.Service(*in.Options.GRPCService), in.Logger)
 	} else {
 		if !in.Conf.Bool("grpc.disable") {
 			addr, err := internal.ParseAddr(in.Conf.String("grpc.addr"))
 			if err != nil {
 				return nil, err
 			}
-			r.GRPC = etcdv3.NewRegistrar(in.Client, etcdv3.Service(Service{
+			r.GRPC = etcdv3.NewRegistrar(in.GRPCClient, etcdv3.Service(Service{
 				Key:   internal.ServiceKey(in.AppName, in.Env, "grpc") + "/" + addr,
 				Value: addr,
 				TTL:   nil,

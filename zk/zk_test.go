@@ -2,7 +2,6 @@ package zk_test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"strings"
 	"sync"
@@ -23,8 +22,7 @@ import (
 
 func TestZk(t *testing.T) {
 	if os.Getenv("ZK_ADDR") == "" {
-		fmt.Println("set ZK_ADDR to run test")
-		return
+		t.Skip("set ZK_ADDR to run test")
 	}
 
 	serverIp := os.Getenv("SERVER_IP")

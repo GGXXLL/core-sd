@@ -1,26 +1,34 @@
 package util
 
-import "github.com/go-kit/kit/sd"
+import (
+	"github.com/go-kit/kit/sd"
+	"sync"
+)
 
 type Registrar struct {
 	HTTP sd.Registrar
 	GRPC sd.Registrar
+
+	onceHTTPRegister   sync.Once
+	onceHTTPDeregister sync.Once
+	onceGRPCRegister   sync.Once
+	onceGRPCDeregister sync.Once
 }
 
 func (r *Registrar) Register() {
 	if r.HTTP != nil {
-		r.HTTP.Register()
+		r.onceHTTPRegister.Do(r.HTTP.Register)
 	}
 	if r.GRPC != nil {
-		r.GRPC.Register()
+		r.onceGRPCRegister.Do(r.GRPC.Register)
 	}
 }
 
 func (r *Registrar) Deregister() {
 	if r.HTTP != nil {
-		r.HTTP.Deregister()
+		r.onceHTTPDeregister.Do(r.HTTP.Deregister)
 	}
 	if r.GRPC != nil {
-		r.GRPC.Deregister()
+		r.onceGRPCDeregister.Do(r.GRPC.Deregister)
 	}
 }
