@@ -8,7 +8,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-kit/kit v0.12.0
 	github.com/go-kit/log v0.2.1
-	github.com/go-zookeeper/zk v1.0.2
+	github.com/go-zookeeper/zk v1.0.4
 	github.com/hashicorp/consul/api v1.11.0
 	github.com/knadh/koanf v1.4.1 // indirect
 	github.com/spf13/cobra v1.4.0 // indirect
